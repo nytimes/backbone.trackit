@@ -1,0 +1,10 @@
+node_modules
+docs
+gh-pages
+*.diff
+*.patch
+*.bak
+*.log
+*.swp
+.DS_Store
+.project

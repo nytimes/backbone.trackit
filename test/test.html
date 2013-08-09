@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<style type="text/css">
+		body { padding: 100px; }
+		input, button, span, a { font-size: 16px; margin: 10px; padding: 8px; border-radius: 4px;}
+		span { display: none;}
+	</style>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+	<script type="text/javascript" src="vendor/underscore.js"></script>
+	<script type="text/javascript" src="vendor/backbone.js"></script>
+	<script type="text/javascript" src="../backbone.trackit.js"></script>
+</head>
+
+<body>
+	<form>
+		<fieldset>
+			<input type="text">
+			<button>Save</button>
+			<a href="#">Route</a>
+			<span>Has changes!</span>
+		</fieldset>
+	</form>
+</body>
+
+<script type="text/javascript">
+	var model = new Backbone.Model({id:1, input:''});
+	
+	Backbone.$.ajax = function(options) {
+		options.success(model.attributes, 'ok');
+	};
+
+	var view = new (Backbone.View.extend({
+		initialize: function() {
+			this.setElement($('form'));
+			this.model = model;
+			model.startTracking('There are unsaved changes');
+			Backbone.history.start();
+			this.listenTo(this.model, 'unsavedChanges', this.unsavedChanges);
+		},
+		events: {
+			'click button': 'save',
+			'input input': 'changed',
+			'click a': 'route'
+		},
+		save: function() {
+			this.model.save(null, {url:'nada'});
+			return false;
+		},
+		changed: function() {
+			this.model.set('input', this.$('input').val());
+		},
+		unsavedChanges: function(hasChanges) {
+			if (hasChanges) this.$('span').fadeIn('fast');
+			else this.$('span').fadeOut('fast');
+		},
+		route: function() {
+			var r = new Backbone.Router();
+			r.navigate('#route');
+			return false;
+		}
+	}));
+
+</script>
+
+</html>
