@@ -2,42 +2,52 @@ $(document).ready(function() {
 
   module("model");
 
-  test('startTracking', 10, function() {
+  test('startTracking', 20, function() {
 
-    var m = new Backbone.Model({id:1, name:'John Cage'});
+    // Test both with and without an ID assigned to test both new object
+    // creation and existing object modification.
+    startTracking(new Backbone.Model({name:'John Cage'}));
+    startTracking(new Backbone.Model({id:1, name:'John Cage'}));
 
-    equal(m._trackingChanges, false);
-    equal(_.keys(m._originalAttrs), 0);
-    m.set('friend', 'Schoenberg');
-    equal(m.unsavedAttributes(), false);
+    function startTracking(m) {
+      equal(m._trackingChanges, false);
+      equal(_.keys(m._originalAttrs), 0);
+      m.set('friend', 'Schoenberg');
+      equal(m.unsavedAttributes(), false);
     
-    m.startTracking();
-    m.on('unsavedChanges', function(b, ch) {
-      equal(b, true);
-      equal(_.keys(ch).length, 1);
-    });
-    m.set('work', '4\'33"');
+      m.startTracking();
+      m.on('unsavedChanges', function(b, ch) {
+        equal(b, true);
+        equal(_.keys(ch).length, 1);
+      });
+      m.set('work', '4\'33"');
 
-    equal(m._trackingChanges, true);
-    equal(m._originalAttrs.name, 'John Cage');
-    equal(m.unsavedAttributes().work, '4\'33"');
+      equal(m._trackingChanges, true);
+      equal(m._originalAttrs.name, 'John Cage');
+      equal(m.unsavedAttributes().work, '4\'33"');
 
-    // Test model.save(), which should reset the unsaved changes.
+      // Test model.save(), which should reset the unsaved changes.
 
-    // Stubbing without a fancy test framework (I'm so uncool).
-    var oldAjax = Backbone.$.ajax;
-    Backbone.$.ajax = function(options) {
-      options.success(m.attributes, 'aok');
-    };
+      // Stubbing without a fancy test framework (I'm so uncool).
+      var oldAjax = Backbone.$.ajax;
+      Backbone.$.ajax = function(options) {
+        var data = JSON.parse(options.data);
+        if ("POST" == options.type) {
+            // Spoof object creation by assigning the new model an ID.
+            data.id = 1;
+        }
+        options.success(data, 'aok');
+      };
 
-    m.off('unsavedChanges');
-    m.save(null, {url:'none'});
+      m.off('unsavedChanges');
+      m.save(null, {url:'none'});
 
-    equal(m.unsavedAttributes(), false);
-    equal(m._originalAttrs.work, '4\'33"');
-    Backbone.$.ajax = oldAjax;
-    m.stopTracking();
+      equal(m.unsavedAttributes(), false);
+      equal(m._originalAttrs.work, '4\'33"');
+      Backbone.$.ajax = oldAjax;
+      m.stopTracking();
 
+    }
   });
 
   test('stopTracking', 2, function() {
