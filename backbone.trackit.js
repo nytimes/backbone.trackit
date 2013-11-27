@@ -136,7 +136,7 @@
     // supplying the result of whether there are unsaved
     // changes and a changed attributes hash.
     _triggerUnsavedChanges: function() {
-      this.trigger('unsavedChanges', !_.isEmpty(this._unsavedChanges), _.clone(this._unsavedChanges));
+      this.trigger('unsavedChanges', !_.isEmpty(this._unsavedChanges), _.clone(this._unsavedChanges), this);
       if (this.unsaved) updateUnsavedModels(this);
     }
   });
