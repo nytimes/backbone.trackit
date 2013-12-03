@@ -62,7 +62,7 @@
   // ------------------
 
   _.extend(Backbone.Model.prototype, {
-    
+
     unsaved: {},
     _trackingChanges: false,
     _originalAttrs: {},
@@ -175,7 +175,7 @@
   Backbone.sync = _.wrap(Backbone.sync, function(oldSync, method, model, options) {
     options || (options = {});
 
-    if (method == 'update' || method == 'create') {
+    if (method == 'update' || method == 'create' || method == 'patch') {
       options.success = _.wrap(options.success, _.bind(function(oldSuccess, data, textStatus, jqXHR) {
         var ret;
         if (oldSuccess) ret = oldSuccess.call(this, data, textStatus, jqXHR);
