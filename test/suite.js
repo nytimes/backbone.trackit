@@ -117,6 +117,22 @@ $(document).ready(function() {
 
   });
 
+  test('unsavedChanges', 3, function() {
+
+    var m = new Backbone.Model({id:3, name:'Harmony Korine', work:'Spring Breakers'});
+    
+    m.startTracking();
+    m.set('work', 'Gummo');
+    m.on('unsavedChanges', function(b, ch, model) {
+      equal(b, false);
+      equal(_.keys(ch).length, 0);
+      equal(model, m);
+    });
+    m.resetAttributes();
+    m.off().stopTracking();
+
+  });
+
   module('unload handler');
 
   test('window', 1, function() {

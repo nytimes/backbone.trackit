@@ -79,7 +79,7 @@ Restores this model's attributes to their original values since the last call to
 Triggered after any changes have been made to the state of unsaved attributes. Passed into the event callback is the boolean value for whether or not the model has unsaved changes, and a cloned hash of the unsaved changes. This event is only triggered after unsaved attribute tracking is started (`startTracking`) and will stop triggering after tracking is turned off (`stopTracking`).
 
 ```js
-model.on('unsavedChanges', function(hasChanges, unsavedAttrs) {
+model.on('unsavedChanges', function(hasChanges, unsavedAttrs, model) {
     ...
 });
 ```
@@ -132,9 +132,13 @@ var model = Backbone.Model.extend({
 ## Change log
 
 ### Master
+
 - Added ability for new models (without ids) to be notified of unsaved changes after a successful call to `model.save()`.
 
+- Added `model` as third parameter to `unsavedChanges` event callback.
+
 ### 0.1.0
+
 - Initial version; extracted from an internal project (Blackbeard) that powers our News Services at The New York Times.
 
 ## License
