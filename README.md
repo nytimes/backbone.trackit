@@ -137,6 +137,8 @@ var model = Backbone.Model.extend({
 
 - Added `model` as third parameter to `unsavedChanges` event callback.
 
+- Added support for the `patch` method on `model#save`.
+
 ### 0.1.0
 
 - Initial version; extracted from an internal project (Blackbeard) that powers our News Services at The New York Times.
