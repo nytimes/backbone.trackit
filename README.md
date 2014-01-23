@@ -84,6 +84,16 @@ model.on('unsavedChanges', function(hasChanges, unsavedAttrs, model) {
 });
 ```
 
+### trackit_silent (option)
+
+When passed as an option and set to `true`, trackit will not track changes when setting the model.
+
+```js
+model.fetch({ ..., trackit_silent:true});
+model.set({artist:'John Cage'}, {trackit_silent:true});
+console.log(model.unsavedAttributes()); // false
+```
+
 ### unsaved (configuration) - *model.unsaved*
 
 The `unsaved` configuration is optional, and is used to opt into and configure unload handling when route/browser navigation changes and the model has unsaved changes. Unload handling warns the user with a dialog prompt, where the user can choose to continue or stop navigation. Unfortunately, both handlers (browser and in-app; `unloadWindowPrompt` and `unloadRouterPrompt`) are needed  becuase they are triggered in different scenarios.
@@ -132,6 +142,8 @@ var model = Backbone.Model.extend({
 ## Change log
 
 ### Master
+
+- Added `trackit_silent` option that can be passed in `options` hashes so that attriubutes can be set into a model without being tracked.
 
 - Added ability for new models (without ids) to be notified of unsaved changes after a successful call to `model.save()`.
 

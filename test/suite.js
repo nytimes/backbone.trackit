@@ -299,4 +299,29 @@ $(document).ready(function() {
 
   });
 
+  test('trackit_silent option', 3, function() {
+
+    var m = new Backbone.Model({id:2, name:'Burial'});
+    
+    m.startTracking();
+    m.set('EP', 'Rival Dealer');
+
+    var oldAjax = Backbone.$.ajax;
+    Backbone.$.ajax = function(options) {
+      var data = {};
+      data.album = 'Untrue'
+      options.success({album:'Untrue'});
+    };
+
+    m.fetch({url:'none', trackit_silent:true});
+    m.set({song:'Truant'}, {trackit_silent:true});
+    
+    equal(m.get('album'), 'Untrue');
+    equal(m.get('song'), 'Truant');
+    equal(_.keys(m.unsavedAttributes()).length, 1);
+
+    Backbone.$.ajax = oldAjax;
+    m.off().stopTracking();
+  });
+
 });

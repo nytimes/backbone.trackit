@@ -158,7 +158,7 @@
     // Delegate to Backbone's set.
     ret = oldSet.call(this, attrs, options);
 
-    if (this._trackingChanges && !options.silent) {
+    if (this._trackingChanges && !options.silent && !options.trackit_silent) {
       _.each(attrs, _.bind(function(val, key) {
         if (_.isEqual(this._originalAttrs[key], val))
           delete this._unsavedChanges[key];
