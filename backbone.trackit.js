@@ -44,7 +44,7 @@
   Backbone.History.prototype.navigate = _.wrap(Backbone.History.prototype.navigate, function(oldNav, fragment, options) {
     var prompt = getPrompt('unloadRouterPrompt', fragment, options);
     if (prompt) {
-      if (confirm(prompt + ' \n\nAre you sure you want to leave this page?')) {
+      if (confirm(prompt)) {
         oldNav.call(this, fragment, options);
       }
     } else {
