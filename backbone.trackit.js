@@ -105,7 +105,7 @@
     // started, the last save, or last restart.
     resetAttributes: function() {
       if (!this._trackingChanges) return;
-      this.attributes = this._originalAttrs;
+      this.set(this._originalAttrs);
       this._resetTracking();
       this._triggerUnsavedChanges();
       return this;
