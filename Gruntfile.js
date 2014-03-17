@@ -6,8 +6,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-compress');
+  grunt.loadNpmTasks('grunt-umd');
 
-  
+
   // USAGE:
   //
   //   grunt build --target=0.1.0
@@ -15,14 +16,14 @@ module.exports = function(grunt) {
   // Where "0.1.0" is the directory name in /dist that
   // files will be built to. If no "--target" is specified
   // then files will be built to dist/Master.
-  grunt.registerTask('build', ['jshint', 'uglify:nasty', 'concat', 'compress:gz']);
+  grunt.registerTask('build', ['jshint', 'umd', 'uglify:nasty', 'concat', 'compress:gz']);
 
 
   js = 'backbone.trackit.js';
   min = 'backbone.trackit.min.js';
   version = grunt.option('target') || 'Master';
   path = 'dist/' + version + '/';
-  nastyFiles[path + min] = [js];
+  nastyFiles[path + min] = [path + js];
   license = '//\n' +
                 '// backbone.trackit - '+version+'\n' +
                 '// The MIT License\n' +
@@ -54,7 +55,7 @@ module.exports = function(grunt) {
         banner: license
       },
       dist: {
-        src: js,
+        src: path + js,
         dest: path + js
       }
     },
@@ -78,6 +79,23 @@ module.exports = function(grunt) {
         },
         expand: true,
         src: [path + min]
+      }
+    },
+
+    umd: {
+      default: {
+        src: js,
+        dest: path + js,
+        template: './umd-template.hbs',
+        objectToExport: "require('backbone.trackit')",
+        globalAlias: 'Backbone',
+        deps: {
+          'default': ['_', 'Backbone'],
+          amd: ['underscore', 'backbone'],
+          cjs: ['underscore', 'backbone'],
+          global: ['_', 'Backbone']
+        },
+        browserifyMapping: '{"backbone":Backbone,"underscore":_}'
       }
     }
   });
