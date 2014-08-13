@@ -1,5 +1,17 @@
-(function() {
-
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(['backbone'], function (Backbone) {
+            // Also create a global in case some scripts
+            // that are loaded still are looking for
+            // a global even when an AMD loader is in use.
+            return factory(Backbone);
+        });
+    } else {
+        // Browser globals
+        factory(root.Backbone);
+    }
+}(this, function (Backbone) {
   // Unsaved Record Keeping
   // ----------------------
 
@@ -188,5 +200,4 @@
     }
     return oldSync(method, model, options);
   });
-
-})();
+}));
