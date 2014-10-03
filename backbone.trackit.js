@@ -41,6 +41,10 @@
   // Wrap Backbone.History.navigate so that in-app routing
   // (`router.navigate('/path')`) can be intercepted with a
   // confirmation if there are any unsaved models.
+
+  //Keep the un wrapped method so we can call it directly in the checkUrl method
+  var originalNavigate = Backbone.History.prototype.navigate;
+
   Backbone.History.prototype.navigate = _.wrap(Backbone.History.prototype.navigate, function(oldNav, fragment, options) {
     var prompt = getPrompt('unloadRouterPrompt', fragment, options);
     if (prompt) {
@@ -52,11 +56,46 @@
     }
   });
 
+
+  //To detect back button press with pushState navigation (not page loads)
+  //We need to intercept the Backbone.history internal popstate events
+
+  //First remove binding to the handler so we can update it (it doesn't update otherwise)
+  Backbone.$(window).off('popstate', Backbone.history.checkUrl).off('hashchange', Backbone.history.checkUrl);
+
+  //Now wrap the handler with out check
+  Backbone.history.checkUrl = _.wrap(Backbone.history.checkUrl, function(oldUrl, e) {
+    //at this point history.fragment is the fragment we are leaving, and history.getFragment is the fragment we are going to.
+    var currentFragment = Backbone.history.fragment;
+
+    var prompt = getPrompt('unloadRouterPrompt', currentFragment);
+    if (prompt) {
+      if (confirm(prompt + ' \n\nAre you sure you want to leave this page?')) {
+        oldUrl.call(Backbone.history, e);
+      } else {
+        //As the fragment is the one we are leaving, calling the original navigate will do nothing, as the fragments match
+        //So we need to change the history fragment to the one in the URL, and then we can swap it back again
+        Backbone.history.fragment = Backbone.history.getFragment();
+        originalNavigate.call(Backbone.history, currentFragment, {trigger:false});
+      }
+    } else {
+      oldUrl.call(Backbone.history, e);
+    }
+  });
+
+  //Now Re bind to the wrapped event
+  Backbone.$(window).on('popstate', Backbone.history.checkUrl).on('hashchange', Backbone.history.checkUrl);
+
+
+
+
   // Create a browser unload handler which is triggered
   // on the refresh, back, or forward button.
   window.onbeforeunload = function(e) {
     return getPrompt('unloadWindowPrompt', e);
   };
+
+
 
   // Backbone.Model API
   // ------------------
