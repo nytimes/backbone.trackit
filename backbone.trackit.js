@@ -178,11 +178,11 @@
     if (method == 'update' || method == 'create' || method == 'patch') {
       options.success = _.wrap(options.success, _.bind(function(oldSuccess, data, textStatus, jqXHR) {
         var ret;
+        //reset tracking before calling old callback
+        model._trackingChanges && model._resetTracking();
         if (oldSuccess) ret = oldSuccess.call(this, data, textStatus, jqXHR);
-        if (model._trackingChanges) {
-          model._resetTracking();
-          model._triggerUnsavedChanges();
-        }
+        //trigger event after we've reset tracking and executed callback
+        model._trackingChanges && model._triggerUnsavedChanges();
         return ret;
       }, this));
     }
