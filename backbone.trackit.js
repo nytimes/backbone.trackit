@@ -106,6 +106,10 @@
     resetAttributes: function() {
       if (!this._trackingChanges) return;
       this.attributes = this._originalAttrs;
+      //notify about changed attributes in model
+      _.each(this._unsavedChanges, _.bind(function (value, key) {
+          this.trigger('change:' + key, this, value);
+      }, this));
       this._resetTracking();
       this._triggerUnsavedChanges();
       return this;
