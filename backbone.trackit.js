@@ -180,6 +180,8 @@
     options || (options = {});
 
     if (method == 'update' || method == 'create' || method == 'patch') {
+      //don't track attributes which will be returned by server during sync
+      options.trackit_silent = true;
       options.success = _.wrap(options.success, _.bind(function(oldSuccess, data, textStatus, jqXHR) {
         var ret;
         //reset tracking before calling old callback
