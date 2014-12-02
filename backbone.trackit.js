@@ -106,6 +106,10 @@
     resetAttributes: function() {
       if (!this._trackingChanges) return;
       this.attributes = this._originalAttrs;
+      //notify about changed attributes in model
+      _.each(this._unsavedChanges, _.bind(function (value, key) {
+          this.trigger('change:' + key, this, value);
+      }, this));
       this._resetTracking();
       this._triggerUnsavedChanges();
       return this;
@@ -176,13 +180,15 @@
     options || (options = {});
 
     if (method == 'update' || method == 'create' || method == 'patch') {
+      //don't track attributes which will be returned by server during sync
+      options.trackit_silent = true;
       options.success = _.wrap(options.success, _.bind(function(oldSuccess, data, textStatus, jqXHR) {
         var ret;
+        //reset tracking before calling old callback
+        model._trackingChanges && model._resetTracking();
         if (oldSuccess) ret = oldSuccess.call(this, data, textStatus, jqXHR);
-        if (model._trackingChanges) {
-          model._resetTracking();
-          model._triggerUnsavedChanges();
-        }
+        //trigger event after we've reset tracking and executed callback
+        model._trackingChanges && model._triggerUnsavedChanges();
         return ret;
       }, this));
     }
