@@ -130,8 +130,8 @@ var model = Backbone.Model.extend({
 
 ## FAQ
 
-- **Not an undo/redo plugin**  
-  If you are looking for an undo/redo plugin, check out [backbone.memento](https://github.com/derickbailey/backbone.memento)
+- **Is this an undo/redo plugin?**  
+  No. If you are looking for an undo/redo plugin, check out [backbone.memento](https://github.com/derickbailey/backbone.memento)
 
 - **Why are there two unload handlers (`unloadWindowPrompt`, `unloadRouterPrompt`)?**  
   Since navigation can be triggered by the browser (forward, back, refresh buttons) or through pushstate/hashchange in the app (by Backbone), a handler needs to be created for both methods.
