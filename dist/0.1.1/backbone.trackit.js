@@ -1,3 +1,8 @@
+//
+// backbone.trackit - 0.1.1
+// The MIT License
+// Copyright (c) 2013 The New York Times, CMS Group, Matthew DeLambo <delambo@gmail.com> 
+//
 (function (root, factory) {
   if (typeof exports === 'object') {
     // CommonJS
