@@ -45,6 +45,8 @@
     var prompt = getPrompt('unloadRouterPrompt', fragment, options);
     if (prompt) {
       if (confirm(prompt + ' \n\nAre you sure you want to leave this page?')) {
+        // Reset the unsaved models array, as we leave the page voluntarily, otherwise, the confirm message appears everytime !
+        unsavedModels = [];
         oldNav.call(this, fragment, options);
       }
     } else {
