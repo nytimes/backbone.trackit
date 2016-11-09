@@ -1,0 +1,20 @@
+{
+  "name": "backbone.trackit",
+  "version": "0.1.0",
+  "description": "A small, opinionated Backbone.js plugin that manages model changes that accrue between saves, giving a Model the ability to undo previous changes, trigger events when there are unsaved changes, and opt in to before unload route handling.",
+  "main": "backbone.trackit.js",
+  "keywords": [
+    "backbone", "model", "tracking"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/NYTimes/backbone.trackit",
+  "dependencies"  : {
+    "backbone"  : "^1.0.0"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test"
+  ]
+}
