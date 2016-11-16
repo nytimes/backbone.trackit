@@ -127,8 +127,17 @@
       return changed;
     },
 
+    _cloneAttributes: function(attrs) {
+      var cloned = {};
+      for (var attr in attrs) {
+        var val = attrs[attr];
+        cloned[attr] = _.isObject(val) ? this._cloneAttributes(val) : _.clone(val);
+      }
+      return cloned;
+    },
+
     _resetTracking: function() {
-      this._originalAttrs = _.clone(this.attributes);
+      this._originalAttrs = this._cloneAttributes(this.attributes);
       this._unsavedChanges = {};
     },
 

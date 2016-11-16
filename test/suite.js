@@ -14,7 +14,7 @@ $(document).ready(function() {
       equal(_.keys(m._originalAttrs), 0);
       m.set('friend', 'Schoenberg');
       equal(m.unsavedAttributes(), false);
-    
+
       m.startTracking();
       m.on('unsavedChanges', function(b, ch) {
         equal(b, true);
@@ -53,7 +53,7 @@ $(document).ready(function() {
   test('stopTracking', 2, function() {
 
     var m = new Backbone.Model({id:2, name:'Marcel Duchamp'});
-    
+
     m.startTracking();
     m.set('work', 'fountain');
     m.on('unsavedChanges', function(b, ch) {
@@ -67,7 +67,7 @@ $(document).ready(function() {
   test('restartTracking', 4, function() {
 
     var m = new Backbone.Model({id:2, name:'Marcel Duchamp'});
-    
+
     m.startTracking();
     m.set('work', 'fountain');
     equal(_.keys(m.unsavedAttributes()).length, 1);
@@ -84,7 +84,7 @@ $(document).ready(function() {
   test('resetAttributes', 3, function() {
 
     var m = new Backbone.Model({id:3, name:'Harmony Korine', work:'Spring Breakers'});
-    
+
     m.startTracking();
     m.set('work', 'Gummo');
     m.on('unsavedChanges', function(b, ch) {
@@ -97,10 +97,11 @@ $(document).ready(function() {
 
   });
 
-  test('unsavedAttributes', 7, function() {
+  test('unsavedAttributes', 9, function() {
 
-    var m = new Backbone.Model({id:4, name:'Autechre'});
-    
+    var origin = {town: 'Oldham', country: 'England'};
+    var m = new Backbone.Model({id:4, name:'Autechre', origin: origin});
+
     m.startTracking();
     equal(m.unsavedAttributes(), false);
 
@@ -109,6 +110,11 @@ $(document).ready(function() {
     m.set({'label':'Warp', 'instrument':'computer'});
     equal(m.unsavedAttributes().label, 'Warp');
     equal(m.unsavedAttributes().instrument, 'computer');
+
+    origin.town = 'Rochdale';
+    m.set('origin', origin);
+    equal(m.unsavedAttributes().origin.town, 'Rochdale');
+    equal(m.unsavedAttributes().origin.country, 'England');
 
     equal(_.keys(m.unsavedAttributes({work:'Amber', label:'plus8', instrument:'computer'})).length, 2);
     equal(m.unsavedAttributes({work:'Amber', label:'plus8', instrument:'computer'}).work, 'Amber');
@@ -120,7 +126,7 @@ $(document).ready(function() {
   test('unsavedChanges', 3, function() {
 
     var m = new Backbone.Model({id:3, name:'Harmony Korine', work:'Spring Breakers'});
-    
+
     m.startTracking();
     m.set('work', 'Gummo');
     m.on('unsavedChanges', function(b, ch, model) {
@@ -233,7 +239,7 @@ $(document).ready(function() {
     };
 
     m.startTracking('prompt for unsaved changes!');
-    
+
     m.set('work', 'Final Home');
     r.navigate('#test')
     m.stopTracking();
@@ -260,7 +266,7 @@ $(document).ready(function() {
     };
 
     m.startTracking('prompt for unsaved changes!');
-    
+
     m.set('work', 'Final Home');
     r.navigate('#test')
     m.stopTracking();
@@ -288,7 +294,7 @@ $(document).ready(function() {
     };
 
     m.startTracking('prompt for unsaved changes!');
-    
+
     m.set('work', 'Final Home');
     r.navigate('#test')
     m.stopTracking();
@@ -302,7 +308,7 @@ $(document).ready(function() {
   test('trackit_silent option', 3, function() {
 
     var m = new Backbone.Model({id:2, name:'Burial'});
-    
+
     m.startTracking();
     m.set('EP', 'Rival Dealer');
 
@@ -315,7 +321,7 @@ $(document).ready(function() {
 
     m.fetch({url:'none', trackit_silent:true});
     m.set({song:'Truant'}, {trackit_silent:true});
-    
+
     equal(m.get('album'), 'Untrue');
     equal(m.get('song'), 'Truant');
     equal(_.keys(m.unsavedAttributes()).length, 1);
