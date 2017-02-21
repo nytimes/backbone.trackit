@@ -49,10 +49,10 @@
     var prompt = getPrompt('unloadRouterPrompt', fragment, options);
     if (prompt) {
       if (confirm(prompt + ' \n\nAre you sure you want to leave this page?')) {
-        oldNav.call(this, fragment, options);
+        return oldNav.call(this, fragment, options);
       }
     } else {
-      oldNav.call(this, fragment, options);
+      return oldNav.call(this, fragment, options);
     }
   });
 
@@ -71,15 +71,15 @@
     var prompt = getPrompt('unloadRouterPrompt', currentFragment);
     if (prompt) {
       if (confirm(prompt + ' \n\nAre you sure you want to leave this page?')) {
-        oldUrl.call(Backbone.history, e);
+        return oldUrl.call(Backbone.history, e);
       } else {
         //As the fragment is the one we are leaving, calling the original navigate will do nothing, as the fragments match
         //So we need to change the history fragment to the one in the URL, and then we can swap it back again
         Backbone.history.fragment = Backbone.history.getFragment();
-        originalNavigate.call(Backbone.history, currentFragment, {trigger:false});
+        return originalNavigate.call(Backbone.history, currentFragment, {trigger:false});
       }
     } else {
-      oldUrl.call(Backbone.history, e);
+      return oldUrl.call(Backbone.history, e);
     }
   });
 
