@@ -10,7 +10,7 @@
   // the `unsavedModels` collection, otherwise remove it.
   var updateUnsavedModels = function(model) {
     if (!_.isEmpty(model._unsavedChanges)) {
-      if (!_.findWhere(unsavedModels, {cid:model.cid})) unsavedModels.push(model);
+      if (!_.find(unsavedModels, {cid:model.cid})) unsavedModels.push(model);
     } else {
       unsavedModels = _.filter(unsavedModels, function(m) { return model.cid != m.cid; });
     }
@@ -24,7 +24,7 @@
   // from the `model.unsaved` configuration hash) to evaluate
   // whether a prompt is needed/returned.
   var getPrompt = function(fnName) {
-    var prompt, args = _.rest(arguments);
+    var prompt, args = _.tail(arguments);
     // Evaluate and return a boolean result. The given `fn` may be a
     // boolean value, a function, or the name of a function on the model.
     var evaluateModelFn = function(model, fn) {
