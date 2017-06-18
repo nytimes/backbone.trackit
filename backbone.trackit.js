@@ -10,7 +10,7 @@
   // the `unsavedModels` collection, otherwise remove it.
   var updateUnsavedModels = function(model) {
     if (!_.isEmpty(model._unsavedChanges)) {
-      if (!_.findWhere(unsavedModels, {cid:model.cid})) unsavedModels.push(model);
+      if (!_.find(unsavedModels, {cid:model.cid})) unsavedModels.push(model);
     } else {
       unsavedModels = _.filter(unsavedModels, function(m) { return model.cid != m.cid; });
     }
@@ -24,7 +24,7 @@
   // from the `model.unsaved` configuration hash) to evaluate
   // whether a prompt is needed/returned.
   var getPrompt = function(fnName) {
-    var prompt, args = _.rest(arguments);
+    var prompt, args = _.tail(arguments);
     // Evaluate and return a boolean result. The given `fn` may be a
     // boolean value, a function, or the name of a function on the model.
     var evaluateModelFn = function(model, fn) {
@@ -67,16 +67,19 @@
     _trackingChanges: false,
     _originalAttrs: {},
     _unsavedChanges: {},
+    _trackitIgnore: {},
 
     // Opt in to tracking attribute changes
     // between saves.
-    startTracking: function() {
+    startTracking: function(options) {
+      options = options || {};
       this._unsavedConfig = _.extend({}, {
         prompt: 'You have unsaved changes!',
         unloadRouterPrompt: false,
         unloadWindowPrompt: false
       }, this.unsaved || {});
       this._trackingChanges = true;
+      this._trackitIgnore = options.ignore;
       this._resetTracking();
       this._triggerUnsavedChanges();
       return this;
@@ -88,6 +91,7 @@
       this._trackingChanges = false;
       this._originalAttrs = {};
       this._unsavedChanges = {};
+      this._trackitIgnore = {};
       this._triggerUnsavedChanges();
       return this;
     },
@@ -160,6 +164,8 @@
 
     if (this._trackingChanges && !options.silent && !options.trackit_silent) {
       _.each(attrs, _.bind(function(val, key) {
+        // do nothing if ignoring this property
+        if (_.includes(this._trackitIgnore, key)) return;
         if (_.isEqual(this._originalAttrs[key], val))
           delete this._unsavedChanges[key];
         else
