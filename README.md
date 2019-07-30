@@ -96,7 +96,7 @@ console.log(model.unsavedAttributes()); // false
 
 ### unsaved (configuration) - *model.unsaved*
 
-The `unsaved` configuration is optional, and is used to opt into and configure unload handling when route/browser navigation changes and the model has unsaved changes. Unload handling warns the user with a dialog prompt, where the user can choose to continue or stop navigation. Unfortunately, both handlers (browser and in-app; `unloadWindowPrompt` and `unloadRouterPrompt`) are needed  becuase they are triggered in different scenarios.
+The `unsaved` configuration is optional, and is used to opt into and configure unload handling when route/browser navigation changes and the model has unsaved changes. Unload handling warns the user with a dialog prompt, where the user can choose to continue or stop navigation. Unfortunately, both handlers (browser and in-app; `unloadWindowPrompt` and `unloadRouterPrompt`) are needed  because they are triggered in different scenarios.
 
 Note: Any model that defines an `unsaved` configuration and uses `startTracking` should call `stopTracking` (when done and if there are unsaved changes) to remove any internal references used by the library so that it can be garbage collected.
 
